@@ -26,7 +26,6 @@ public:
 	virtual void InitGameState() override;
 	
 	virtual AActor* ChoosePlayerStart_Implementation(AController* Player) override;
-	
 
 	ERWF_GamePhase GetGamePhase() const { return CurrentPhase; }
 
@@ -36,10 +35,7 @@ protected:
 	virtual void PostLogin(APlayerController* NewPlayer) override;
 
 private:
-
 	ERWF_GamePhase CurrentPhase = ERWF_GamePhase::PreGamePhase;
-	
-
 };
 
 

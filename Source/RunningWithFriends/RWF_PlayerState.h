@@ -17,4 +17,8 @@ class RUNNINGWITHFRIENDS_API ARWF_PlayerState : public APlayerState
 public:
 
 	virtual void BeginPlay() override;
+
+	UPROPERTY()
+	int32 RemoteTrackID = 0;
+	
 };

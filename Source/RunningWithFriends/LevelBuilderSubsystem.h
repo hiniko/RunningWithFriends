@@ -14,7 +14,7 @@ public:
 	FVector TrackPosition;
 
 	UPROPERTY()
-	TWeakObjectPtr<APlayerController*> OwningPlayer;
+	TWeakObjectPtr<APlayerController> OwningPlayer;
 
 	UPROPERTY()
 	TArray<ALevelSection*> CurrentSections;
