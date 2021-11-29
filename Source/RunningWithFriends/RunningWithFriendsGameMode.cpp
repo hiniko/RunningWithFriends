@@ -3,6 +3,7 @@
 #include "RunningWithFriendsGameMode.h"
 
 #include "RunningWithFriends.h"
+#include "RWF_GameInstance.h"
 #include "ToolBuilderUtil.h"
 #include "GameFramework/PlayerStart.h"
 #include "Kismet/GameplayStatics.h"
@@ -43,6 +44,22 @@ AActor* ARunningWithFriendsGameMode::ChoosePlayerStart_Implementation(AControlle
 		}
 	}
 	return nullptr;
+}
+
+void ARunningWithFriendsGameMode::HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer)
+{
+	UE_LOG(LogRWF, Display, TEXT("Handling Starting New Player: %s"), *NewPlayer->GetName()) 
+	if(URWF_GameInstance* GameInst = Cast<URWF_GameInstance>(GetGameInstance()))
+	{
+		ULevelBuilderSubsystem* LevelBuilderSubsystem = GameInst->GetSubsystem<ULevelBuilderSubsystem>();
+		if(LevelBuilderSubsystem)
+		{
+			LevelBuilderSubsystem->AddPlayer(NewPlayer);
+		}
+	}
+		
+	
+	
 }
 
 void ARunningWithFriendsGameMode::PostLogin(APlayerController* NewPlayer)

@@ -45,19 +45,20 @@ void ULevelBuilderSubsystem::Deinitialize()
 	UGameInstanceSubsystem::Deinitialize();
 }
 
-void ULevelBuilderSubsystem::AddPlayerTrack(APlayerState* PlayerState)
+void ULevelBuilderSubsystem::AddPlayer(APlayerController* NewPlayer)
 {
+#if WITH_SERVER_CODE
+	UE_LOG(LogLevelBuilder, Display, TEXT("Adding Player for controller %d"), NewPlayer->GetUniqueID());
 	FPlayerTrack Track;
-	
-	Track.OwningPlayer = PlayerState;
+	Track.OwningPlayer = NewPlayer;
 	Track.TrackPosition = FVector();
-	PlayerTracks.Add(PlayerState, Track);
-	
-	UE_LOG(LogLevelBuilder, Display, TEXT("Added Track for Player: %d"), PlayerState->GetUniqueID());
+	PlayerTracks.Add(NewPlayer, Track);
+#endif
 }
 
 void ULevelBuilderSubsystem::SpawnNextLevelSection(AController* Player, FVector Position)
 {
+#if WITH_SERVER_CODE
 	if (LevelSections.Num() == 0)
 	{
 		UE_LOG(LogLevelBuilder, Error, TEXT("No Level Sections available"))
@@ -67,4 +68,5 @@ void ULevelBuilderSubsystem::SpawnNextLevelSection(AController* Player, FVector 
 	const int32 idx = FMath::RandRange(0, LevelSections.Num()-1);
 	GetWorld()->SpawnActor(LevelSections[idx].SectionClass, &Position);
 	UE_LOG(LogLevelBuilder, Verbose, TEXT("Spawning in new level at %f, %f, %f"), Position.X, Position.Y, Position.Z);
+#endif 
 }

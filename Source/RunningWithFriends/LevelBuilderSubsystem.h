@@ -14,7 +14,7 @@ public:
 	FVector TrackPosition;
 
 	UPROPERTY()
-	TWeakObjectPtr<APlayerState> OwningPlayer;
+	TWeakObjectPtr<APlayerController*> OwningPlayer;
 
 	UPROPERTY()
 	TArray<ALevelSection*> CurrentSections;
@@ -34,6 +34,8 @@ public:
 
 	void AddPlayerTrack(APlayerState* PlayerState);
 
+	void AddPlayer(APlayerController* NewPlayer);
+
 	void SpawnNextLevelSection(AController* Player, const FVector Position);
 
 private:
@@ -41,5 +43,5 @@ private:
 	TArray<FLevelSectionData> LevelSections;
 
 	UPROPERTY()
-	TMap<APlayerState*, FPlayerTrack> PlayerTracks;
+	TMap<APlayerController*, FPlayerTrack> PlayerTracks;
 };

@@ -30,6 +30,8 @@ public:
 
 	ERWF_GamePhase GetGamePhase() const { return CurrentPhase; }
 
+	virtual void HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer) override;
+
 protected:
 	virtual void PostLogin(APlayerController* NewPlayer) override;
 
