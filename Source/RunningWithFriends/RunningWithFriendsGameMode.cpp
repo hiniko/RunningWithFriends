@@ -2,12 +2,11 @@
 
 #include "RunningWithFriendsGameMode.h"
 
-#include "RunningWithFriends.h"
+#include "RWF_Helpers.h"
 #include "RWF_GameInstance.h"
 #include "RWF_PlayerStart.h"
 #include "RWF_PlayerState.h"
 #include "ToolBuilderUtil.h"
-#include "GameFramework/PlayerStart.h"
 #include "Kismet/GameplayStatics.h"
 
 
@@ -59,16 +58,14 @@ void ARunningWithFriendsGameMode::HandleStartingNewPlayer_Implementation(APlayer
 	
 	Super::HandleStartingNewPlayer_Implementation(NewPlayer);
 	
-	if(URWF_GameInstance* GameInst = Cast<URWF_GameInstance>(GetGameInstance()))
+	if(RWF_GET_GAME_INSTANCE)
 	{
-
 		ULevelBuilderSubsystem* LevelBuilderSubsystem = GameInst->GetSubsystem<ULevelBuilderSubsystem>();
 		if(LevelBuilderSubsystem)
 		{
 			LevelBuilderSubsystem->AddPlayer(NewPlayer);
-			ARWF_PlayerState* PlayerState = NewPlayer->GetPlayerState<ARWF_PlayerState>();
+			const ARWF_PlayerState* PlayerState = NewPlayer->GetPlayerState<ARWF_PlayerState>();
 			UE_LOG(LogRWF, Display, TEXT("Got PlayerState with PlayerID %d"), PlayerState->GetPlayerId());
-			
 		}
 	}
 
