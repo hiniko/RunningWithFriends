@@ -55,16 +55,17 @@ void ABaseRunner::MoveRight(float Value)
 
 void ABaseRunner::PostNetReceiveLocationAndRotation()
 {
-	if(bShouldOffsetLocation)
-	{
-		const FRepMovement& LocalRepMovement = GetReplicatedMovement();
-		FVector NewLocation = GetActorLocation() - LocationOffset;
-
-		if( RootComponent && RootComponent->IsRegistered() && (NewLocation != GetActorLocation() || LocalRepMovement.Rotation != GetActorRotation()) )
-		{
-			SetActorLocationAndRotation(NewLocation, LocalRepMovement.Rotation, /*bSweep=*/ false);
-		}
-	}
+	Super::PostNetReceiveLocationAndRotation();
+	// if(bShouldOffsetLocation)
+	// {
+	// 	const FRepMovement& LocalRepMovement = GetReplicatedMovement();
+	// 	FVector NewLocation = GetActorLocation() - LocationOffset;
+	//
+	// 	if( RootComponent && RootComponent->IsRegistered() && (NewLocation != GetActorLocation() || LocalRepMovement.Rotation != GetActorRotation()) )
+	// 	{
+	// 		SetActorLocationAndRotation(NewLocation, LocalRepMovement.Rotation, /*bSweep=*/ false);
+	// 	}
+	// }
 }
 
 // Called every frame

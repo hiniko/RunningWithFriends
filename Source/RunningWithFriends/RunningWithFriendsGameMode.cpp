@@ -24,8 +24,6 @@ ARunningWithFriendsGameMode::ARunningWithFriendsGameMode()
 void ARunningWithFriendsGameMode::InitGameState()
 {
 	Super::InitGameState();
-
-	bStartPlayersAsSpectators = 0;
 }
 
 AActor* ARunningWithFriendsGameMode::ChoosePlayerStart_Implementation(AController* Player)
@@ -43,15 +41,11 @@ AActor* ARunningWithFriendsGameMode::ChoosePlayerStart_Implementation(AControlle
 	{
 		if(ARWF_PlayerStart* Start = Cast<ARWF_PlayerStart>(Actor))
 		{
-			if(Start->bOccupiedByPlayer)
+			if(Start->IsOccupied())
 				continue;
 
-			bool bClaimed = Start->ClaimStartPoint(GetNumPlayers(), Player);
-			
-			if(bClaimed)
-			{
+			if(Start->ClaimStartPoint(GetNumPlayers(), Player))
 				return Start;
-			}
 		}
 	}
 
@@ -61,9 +55,10 @@ AActor* ARunningWithFriendsGameMode::ChoosePlayerStart_Implementation(AControlle
 
 void ARunningWithFriendsGameMode::HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer)
 {
-	UE_LOG(LogRWF, Display, TEXT("Handling Starting New Player: %s"), *NewPlayer->GetName()) 
+	UE_LOG(LogRWF, Display, TEXT("Handling Starting New Player: %s"), *NewPlayer->GetName())
 	
-#if WITH_SERVER_CODE
+	Super::HandleStartingNewPlayer_Implementation(NewPlayer);
+	
 	if(URWF_GameInstance* GameInst = Cast<URWF_GameInstance>(GetGameInstance()))
 	{
 
@@ -76,8 +71,7 @@ void ARunningWithFriendsGameMode::HandleStartingNewPlayer_Implementation(APlayer
 			
 		}
 	}
-#endif
-	
+
 }
 
 void ARunningWithFriendsGameMode::PostLogin(APlayerController* NewPlayer)

@@ -16,8 +16,6 @@ class RUNNINGWITHFRIENDS_API ARWF_PlayerStart : public APlayerStart
 	
 public: 
 
-	UPROPERTY(BlueprintReadOnly)
-	bool bOccupiedByPlayer;
 
 	UPROPERTY(BlueprintReadOnly)
 	TWeakObjectPtr<AController> StartPointOwner;
@@ -28,5 +26,10 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	int32 ClientSpawnIndex = 0;
 	
-	bool ClaimStartPoint(int32 INT32, AController* Player);
+	UFUNCTION(BlueprintCallable)
+	bool IsOccupied() { return StartPointOwner.IsValid(); }
+	
+	bool ClaimStartPoint(int32 ServerIndex, AController* Player);
+
+	void ReleaseStartPoint();
 };

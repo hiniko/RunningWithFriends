@@ -6,15 +6,20 @@
 
 bool ARWF_PlayerStart::ClaimStartPoint(int32 ServerIndex, AController* Player)
 {
-	if(bOccupiedByPlayer && StartPointOwner.Get() != nullptr)
+	if(StartPointOwner.Get() != nullptr)
 	{
 		UE_LOG(LogRWF, Display, TEXT("Start Point already has owner details!"))
 		return false;
 	}
 
-	bOccupiedByPlayer = true;
 	StartPointOwner = Player;
 	ServerSpawnIndex = ServerIndex;
 
 	return true;
+}
+
+void ARWF_PlayerStart::ReleaseStartPoint()
+{
+	StartPointOwner.Reset();
+	ServerSpawnIndex = 0;
 }
