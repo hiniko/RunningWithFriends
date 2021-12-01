@@ -1,8 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
-#include "RWF_Helpers.h"
 #include "RWF_PlayerStart.h"
+#include "RWF_Helpers.h"
 
 bool ARWF_PlayerStart::ClaimStartPoint(int32 ServerIndex, AController* Player)
 {

@@ -11,10 +11,10 @@ struct FPlayerTrack
 public:
 	
 	UPROPERTY()
-	FVector TrackPosition;
+	FVector TrackPosition = FVector::ZeroVector;
 
 	UPROPERTY()
-	uint32 OwningPlayerID;
+	uint32 OwningPlayerID = 0;
 
 	UPROPERTY()
 	TArray<ALevelSection*> CurrentSections;
@@ -22,31 +22,6 @@ public:
 	UPROPERTY()
 	bool bIsLocalPlayer = false;
 };
-
-UCLASS()
-class RUNNINGWITHFRIENDS_API ALevelBuilderReplication: public AInfo
-{
-	GENERATED_BODY()
-
-friend class ULevelBuilderSubsystem;
-
-public:
-	ALevelBuilderReplication();
-
-	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-
-protected:
-	UFUNCTION()
-	virtual void OnRep_PlayerTracks();
-	
-	UPROPERTY(ReplicatedUsing=OnRep_PlayerTracks)
-	TArray<FPlayerTrack> PlayerTracks;
-
-private:
-	void AddTrackInfo(FPlayerTrack &Track);
-
-};
-
 
 UCLASS()
 class RUNNINGWITHFRIENDS_API ULevelBuilderSubsystem : public UGameInstanceSubsystem
@@ -57,11 +32,10 @@ public:
 	virtual void Deinitialize() override;
 
 	void AddPlayer(APlayerController* NewPlayer);
+	
 	void SpawnNextLevelSection(AController* Player, const FVector Position);
 
 protected:
-	UPROPERTY()
-	ALevelBuilderReplication* RepActor;
 
 	UPROPERTY()
 	TArray<FLevelSectionData> LevelSections;
