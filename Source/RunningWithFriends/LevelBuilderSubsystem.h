@@ -17,7 +17,7 @@ public:
 	uint32 OwningPlayerID = 0;
 
 	UPROPERTY()
-	TArray<ALevelSection*> CurrentSections;
+	TArray<TSubclassOf<ALevelSection>> CurrentSections;
 
 	UPROPERTY()
 	bool bIsLocalPlayer = false;
@@ -32,8 +32,12 @@ public:
 	virtual void Deinitialize() override;
 
 	void AddPlayer(APlayerController* NewPlayer);
-	
+
+
 	void SpawnNextLevelSection(AController* Player, const FVector Position);
+	TSubclassOf<ALevelSection> GetRandomSectionClass() const;
+	TSubclassOf<ALevelSection> GetSectionAtIndex(int32 idx) const;
+	
 
 protected:
 

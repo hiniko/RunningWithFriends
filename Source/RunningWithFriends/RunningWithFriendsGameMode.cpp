@@ -2,6 +2,8 @@
 
 #include "RunningWithFriendsGameMode.h"
 
+#include "LevelBuilderSubSystem.h"
+#include "RWF_GameState.h"
 #include "RWF_Helpers.h"
 #include "RWF_PlayerStart.h"
 #include "ToolBuilderUtil.h"
@@ -21,28 +23,58 @@ ARunningWithFriendsGameMode::ARunningWithFriendsGameMode()
 void ARunningWithFriendsGameMode::InitGameState()
 {
 	Super::InitGameState();
+	
+
+	// Find player starts and spawn in new Sections below them
+	TArray<AActor*> Starts;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ARWF_PlayerStart::StaticClass(), Starts);
+	for(auto Actor : Starts)
+	{
+		if(ARWF_PlayerStart* Start = Cast<ARWF_PlayerStart>(Actor))
+		{
+			PlayerStarts.Add(Start);
+		}
+	}
+	UE_LOG(LogRWF, Display, TEXT("Found %d Player Starts"), PlayerStarts.Num());
+
+	ULevelBuilderSubsystem* LevelBuilder = GetGameInstance()->GetSubsystem<ULevelBuilderSubsystem>();
+	if(LevelBuilder == nullptr)
+	{
+		UE_LOG(LogRWF, Error, L"Failed to find LevelBuilder Subsystem!")
+		return;
+	}
+	
+	FirstSectionClass = LevelBuilder->GetSectionAtIndex(3);
 }
 
 AActor* ARunningWithFriendsGameMode::ChoosePlayerStart_Implementation(AController* Player)
 {
-	TArray<AActor*> PlayerStarts;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ARWF_PlayerStart::StaticClass(), PlayerStarts);
-
 	if(PlayerStarts.Num() == 0)
 	{
 		UE_LOG(LogRWF, Display, TEXT("GameMode: Failed to find any APlayerStarts in Map!"))
 		return nullptr;
 	}
-
-	for(AActor* Actor: PlayerStarts)
+	
+	ULevelBuilderSubsystem* LevelBuilder = GetGameInstance()->GetSubsystem<ULevelBuilderSubsystem>();
+	if(LevelBuilder == nullptr)
 	{
-		if(ARWF_PlayerStart* Start = Cast<ARWF_PlayerStart>(Actor))
-		{
-			if(Start->IsOccupied())
-				continue;
+		UE_LOG(LogRWF, Error, L"Failed to find LevelBuilder Subsystem!")
+		return nullptr;
+	}
 
-			if(Start->ClaimStartPoint(GetNumPlayers(), Player))
-				return Start;
+	for(ARWF_PlayerStart* Start: PlayerStarts)
+	{
+		if(Start->IsOccupied())
+			 continue;
+
+		if(Start->ClaimStartPoint(GetNumPlayers(), Player))
+		{
+			ARWF_GameState* State = GetGameState<ARWF_GameState>();
+			const FVector SectionPos = Start->GetActorLocation() - FVector(0,-250,100);
+			// Add player ot the track lists	
+			State->AddTrackInfo(Player);
+			State->AddSectionForPlayer(Player->GetUniqueID(), SectionPos, FirstSectionClass);
+			return Start;
 		}
 	}
 

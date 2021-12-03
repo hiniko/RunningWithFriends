@@ -3,7 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "LevelBuilderSubSystem.h"
+#include "RWF_PlayerStart.h"
 #include "GameFramework/GameModeBase.h"
+#include "GameFramework/PlayerStart.h"
 #include "RunningWithFriendsGameMode.generated.h"
 
 
@@ -34,9 +37,12 @@ public:
 protected:
 	virtual void PostLogin(APlayerController* NewPlayer) override;
 
+	UPROPERTY()
+	TArray<ARWF_PlayerStart*> PlayerStarts;
+
+	UPROPERTY()
+	TSubclassOf<ALevelSection> FirstSectionClass;
+
 private:
 	ERWF_GamePhase CurrentPhase = ERWF_GamePhase::PreGamePhase;
 };
-
-
-

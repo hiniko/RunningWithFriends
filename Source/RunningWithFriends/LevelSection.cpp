@@ -45,7 +45,6 @@ void ALevelSection::OnTriggerOverlap(UPrimitiveComponent* OverlappedComp, AActor
 	{
 		if(const ABaseRunner* Runner = Cast<ABaseRunner>(OtherActor))
 		{
-			
 			if(ULevelBuilderSubsystem* LevelBuilder = GetGameInstance()->GetSubsystem<ULevelBuilderSubsystem>())
 			{
 				LevelBuilder->SpawnNextLevelSection(Runner->GetController(), NextSectionLocation->GetComponentLocation());

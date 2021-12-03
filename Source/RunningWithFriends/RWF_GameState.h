@@ -21,14 +21,20 @@ class RUNNINGWITHFRIENDS_API ARWF_GameState : public AGameStateBase
 public:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
-protected:
 	UFUNCTION()
 	virtual void OnRep_PlayerTracks();
 	
 	UPROPERTY(ReplicatedUsing=OnRep_PlayerTracks)
 	TArray<FPlayerTrack> PlayerTracks;
+	
+	void AddTrackInfo(AController* NewPlayer);
+
+	UFUNCTION(Server, Reliable)
+	void AddSectionForPlayer(uint32 PlayerID, FVector Position, TSubclassOf<ALevelSection> SectionClass);
+
 
 private:
-	void AddTrackInfo(APlayerController* NewPlayer);
+	uint32 LastTrackUpdate = 0;
+	uint32 CurrentTrackUpdate = 0;
 
 };
