@@ -12,7 +12,7 @@ I have tried replicating an array of player tracks that should describe the stat
 
 I'm kind of just hacking around now and I don't really think I'm getting anywhere. Trying to read a few things or find videos that are not blueprint related.
 
-I'm not stranger to client server frameworks, but this one is kicking my butt.
+I'm no stranger to client server frameworks, but this one is kicking my butt.
 
 --
 
@@ -30,6 +30,14 @@ UNetDriver::ProcessRemoteFunction: No owning connection for actor RWF_GameState_
 
 Not sure why that is. Probably worth investigating the next chance I have. It's a bit of a issue that I can't reliably track which client threw the warning out, or easily breakpoint per client. I can disable the single threaded mode for multipler and see how that goes however. 
 
+
+-- 
+
+A thought on game design. The original simple thought was that each player gets a random set, but that feels a bit unfair really. Maybe some kind of "doing well" could mean your opponents have harder courses?
+
+At the very least next time I need to make it so the level gen is already somewhat ahead of the lead player at least
+
+Also, and this one will be a hard one, the client server rearrangement of the tracks...
 
 ## 1/12/21
 Having issues with understanding replication, roles and running code the server and client.
