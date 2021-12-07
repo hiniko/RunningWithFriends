@@ -1,9 +1,8 @@
 ﻿#include "LevelBuilderSubSystem.h"
+#include "RWF_Helpers.h"
 #include "LevelSectionsDataTable.h"
 #include "RWF_GameInstance.h"
 #include "RWF_GameState.h"
-#include "RWF_Helpers.h"
-#include "Engine/AssetManager.h"
 
 DEFINE_LOG_CATEGORY(LogLevelBuilder)
 

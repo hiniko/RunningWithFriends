@@ -54,6 +54,30 @@ void ALevelSection::OnTriggerOverlap(UPrimitiveComponent* OverlappedComp, AActor
 	}
 }
 
+void ALevelSection::PostNetReceiveLocationAndRotation()
+{
+	const FRepMovement& LocalRepMovement = GetReplicatedMovement();
+
+	FIntVector RebaseVector;
+	if(CurrentTrackOwner->bIsLocalPlayer)
+	{
+		RebaseVector.X = 150;
+		RebaseVector.Y = 0;
+		RebaseVector.Z = 50;
+	}else
+	{
+		RebaseVector.X = 0;
+		RebaseVector.Y = 0;
+		RebaseVector.Z = 0;
+	}
+	
+	FVector NewLocation = FRepMovement::RebaseOntoLocalOrigin(LocalRepMovement.Location, RebaseVector);
+	if( RootComponent && RootComponent->IsRegistered() && (NewLocation != GetActorLocation() || LocalRepMovement.Rotation != GetActorRotation()) )
+	{
+		SetActorLocationAndRotation(NewLocation, LocalRepMovement.Rotation, /*bSweep=*/ false);
+	}
+}
+
 
 // Called every frame
 void ALevelSection::Tick(float DeltaTime)

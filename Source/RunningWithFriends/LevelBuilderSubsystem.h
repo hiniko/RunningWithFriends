@@ -1,8 +1,11 @@
 ﻿#pragma once
+
+#include "LevelSection.h"
 #include "LevelSectionsDataTable.h"
-#include "LevelBuilderSubsystem.generated.h"
+#include "LevelBuilderSubsystem.generated.h" 
 
 DECLARE_LOG_CATEGORY_EXTERN(LogLevelBuilder, Display, All)
+
 
 USTRUCT()
 struct FPlayerTrack
@@ -33,15 +36,11 @@ public:
 
 	void AddPlayer(APlayerController* NewPlayer);
 
-
 	void SpawnNextLevelSection(AController* Player, const FVector Position);
 	TSubclassOf<ALevelSection> GetRandomSectionClass() const;
 	TSubclassOf<ALevelSection> GetSectionAtIndex(int32 idx) const;
-	
 
-protected:
-
-	UPROPERTY()
+	//UPROPERTY()
 	TArray<FLevelSectionData> LevelSections;
 
 	UPROPERTY()

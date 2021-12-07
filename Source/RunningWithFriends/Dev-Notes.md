@@ -1,5 +1,15 @@
 ﻿# Dev Log
 
+## 6/12/21
+
+I don't know why but I started getting this error:
+
+```
+  LevelBuilderSubsystem.h(43): [] Unrecognized type 'FLevelSectionData' - type must be a UCLASS, USTRUCT or UENUM
+```
+The thing is, `FLevelSectionData` IS and always HAS been a `USTRUCT(BlueprintType)`. Clean builds, changing the code slight and some other things but to no effect. 
+This is pretty annoying.
+
 ## 3/12/21
 I have tried a number of things tonight in terms of replication, all I can really say is that I still do not understand it.
 

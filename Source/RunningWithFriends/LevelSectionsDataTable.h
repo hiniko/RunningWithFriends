@@ -12,10 +12,10 @@ struct FLevelSectionData
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<ALevelSection> SectionClass;
 
-	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float Difficulty = 1;
 };
 
@@ -26,5 +26,4 @@ struct FLevelSectionsDataTableRow : public FTableRowBase
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	FLevelSectionData LevelData;
-	
 };

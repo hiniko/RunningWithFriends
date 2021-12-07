@@ -14,13 +14,12 @@ void ARWF_GameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLi
 
 void ARWF_GameState::OnRep_PlayerTracks()
 {
-	
+	UE_LOG(LogRWF, Display, TEXT("Replicated PlayerTracks!"));
 }
-
 
 void ARWF_GameState::AddTrackInfo(AController* NewPlayer)
 {
-	UE_LOG(LogLevelBuilder, Display, TEXT("Adding Player for controller %d"), NewPlayer->GetUniqueID());
+	UE_LOG(LogLevelBuilder, Display, TEXT("Adding Player track for controller %d"), NewPlayer->GetUniqueID());
 	FPlayerTrack Track;
 	Track.OwningPlayerID = NewPlayer->GetUniqueID();
 	Track.TrackPosition = FVector::ZeroVector;
@@ -35,7 +34,7 @@ void ARWF_GameState::AddSectionForPlayer_Implementation(uint32 PlayerID, FVector
 		UE_LOG(LogRWF, Error, L"Unable to find Track info for player %d", PlayerID);
 		return;
 	}
-
+	
 	Track->CurrentSections.Add(SectionClass);
 	GetWorld()->SpawnActor(SectionClass, &Position);
 }

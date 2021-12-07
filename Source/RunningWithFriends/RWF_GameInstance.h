@@ -3,13 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "LevelBuilderSubSystem.h"
+#include "Engine/DataTable.h"
 #include "Engine/GameInstance.h"
 #include "RWF_GameInstance.generated.h"
 
-/**
- * 
- */
+
 UCLASS()
 class RUNNINGWITHFRIENDS_API URWF_GameInstance : public UGameInstance
 {
