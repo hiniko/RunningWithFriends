@@ -1,13 +1,22 @@
 ﻿#pragma once
-
 #include "LevelSection.h"
-#include "LevelSectionsDataTable.h"
 #include "LevelBuilderSubsystem.generated.h" 
 
 DECLARE_LOG_CATEGORY_EXTERN(LogLevelBuilder, Display, All)
 
+USTRUCT(BlueprintType)
+struct FLevelSectionData
+{
+	GENERATED_BODY()
 
-USTRUCT()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<ALevelSection> SectionClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Difficulty = 1;
+};
+
+USTRUCT(BlueprintType)
 struct FPlayerTrack
 {
 	GENERATED_BODY()
@@ -40,9 +49,9 @@ public:
 	TSubclassOf<ALevelSection> GetRandomSectionClass() const;
 	TSubclassOf<ALevelSection> GetSectionAtIndex(int32 idx) const;
 
-	//UPROPERTY()
+	UPROPERTY()
 	TArray<FLevelSectionData> LevelSections;
-
+	
 	UPROPERTY()
 	TMap<APlayerController*, FPlayerTrack> PlayerTracks;
 	

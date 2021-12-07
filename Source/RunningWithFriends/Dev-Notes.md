@@ -1,5 +1,28 @@
 ﻿# Dev Log
 
+## 7/12/21
+
+Ok! Yesterday's error! Synced up the project at work today hit build and actually got a useful error message!
+```
+  Circular dependency detected for filename C:\Users\shermanr\PersonalProjects\RunningWithFriends\Source\RunningWithFriends\LevelSection.h!
+  Circular dependency detected for filename C:\Users\shermanr\PersonalProjects\RunningWithFriends\Source\RunningWithFriends\LevelSectionsDataTable.h!
+```
+
+Well what do you know. I did see a UEAnswers suggesting the same thing, as well as a few others but there you go.
+Should be easier to fix now.
+
+--
+
+*Should be easier to fix*. - yeah right. I have actually fixed it now however. 
+I don't know why I didnt see this coming earlier. be cause it was quite obvious in hindsight. 
+The main issue was that `ALevelSection` now includes the `LevelBuilderSubsystem` as that keeps the `FPlayerTrack` struct.
+I though it would be a good idea to keep a reference like that in the level section so I knew how it belonged to.
+However `LevelBuilderSubsystem` includes `ALevelSection` as the Template `TSubClassOf` Needs the actual definition of that class in order to compile. It also needed the `FLevelSectionData` struct from the `LevelSectionDataTable` _WHICH_ in itself needed `ALevelSection`. 
+
+Honestly, bit of a rokkie error that one. And probably means that I'm not doing too well code design wise either.
+
+--
+
 ## 6/12/21
 
 I don't know why but I started getting this error:

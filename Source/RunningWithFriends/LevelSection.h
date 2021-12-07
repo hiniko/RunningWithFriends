@@ -3,11 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "LevelBuilderSubsystem.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/Actor.h"
 #include "LevelSection.generated.h"
 
+struct FPlayerTrack;
 
 UCLASS()
 class RUNNINGWITHFRIENDS_API ALevelSection : public AActor

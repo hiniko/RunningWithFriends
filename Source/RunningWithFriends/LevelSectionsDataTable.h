@@ -3,21 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "LevelSection.h"
 #include "Engine/DataTable.h"
+#include "LevelBuilderSubsystem.h"
 #include "LevelSectionsDataTable.generated.h"
 
-USTRUCT(BlueprintType)
-struct FLevelSectionData
-{
-	GENERATED_BODY()
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<ALevelSection> SectionClass;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Difficulty = 1;
-};
 
 USTRUCT(BlueprintType)
 struct FLevelSectionsDataTableRow : public FTableRowBase
