@@ -1,5 +1,21 @@
 ﻿# Dev Log
 
+## 8/12/21
+
+So I'm still missing something big here about replication. 
+
+```
+LogNet: Warning: UNetDriver::ProcessRemoteFunction: No owning connection for actor RWF_GameState_0. Function AddSectionForPlayer will not be processed.
+LogRWF: Display: Replicated PlayerTracks! ROLE_SimulatedProxy, ROLE_Authority
+LogRWF: Display: Updating Track's local player flag for 259
+```
+
+Currently have it setup so when a new piece of track is added to the game state, an `OnRep_PlayerTracks` function runs. I assumed this would run on all clients. This isn't he case. It only runs on the client with Authority? So how does a client respond to new replicated data coming in?
+
+What I need to do really is for a client to know which track belongs to itself, so I can then start moving / rebasing things around. I have a feeling that isn't going to work much either. 
+
+--
+
 ## 7/12/21
 
 Ok! Yesterday's error! Synced up the project at work today hit build and actually got a useful error message!
@@ -19,9 +35,25 @@ The main issue was that `ALevelSection` now includes the `LevelBuilderSubsystem`
 I though it would be a good idea to keep a reference like that in the level section so I knew how it belonged to.
 However `LevelBuilderSubsystem` includes `ALevelSection` as the Template `TSubClassOf` Needs the actual definition of that class in order to compile. It also needed the `FLevelSectionData` struct from the `LevelSectionDataTable` _WHICH_ in itself needed `ALevelSection`. 
 
-Honestly, bit of a rokkie error that one. And probably means that I'm not doing too well code design wise either.
+Honestly, bit of a rookie error that one. And probably means that I'm not doing too well code design wise either.
 
 --
+
+Second DERP discovered. This time to do with PlayerControllers across the network.
+
+* First, I know that players controllers only exist on:
+  * The Server, Which has a Controller for all Connected Players / AI 
+  * The Client, However only for the connected player. 
+  
+To get around this I thought I could Use the Unique ID of the player controller to replicate across. However I couldn't seem to be able to match this against the local players ID.
+
+Turns out `uint32 GetUniqueID()` is a `UObjectBase` Identifier, It does not match across network. Which makes sense. 
+What I wanted was `GetPlayerId` from the `PlayerState`
+
+The more you know.
+
+  
+
 
 ## 6/12/21
 

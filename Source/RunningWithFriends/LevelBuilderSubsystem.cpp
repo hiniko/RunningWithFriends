@@ -3,6 +3,7 @@
 #include "LevelSectionsDataTable.h"
 #include "RWF_GameInstance.h"
 #include "RWF_GameState.h"
+#include "GameFramework/PlayerState.h"
 
 DEFINE_LOG_CATEGORY(LogLevelBuilder)
 
@@ -74,6 +75,6 @@ void ULevelBuilderSubsystem::SpawnNextLevelSection(AController* Player, FVector 
 	ARWF_GameState* GameState = Cast<ARWF_GameState>(GetWorld()->GetGameState());
 	if(GameState)
 	{
-		GameState->AddSectionForPlayer(Player->GetUniqueID(), Position, GetRandomSectionClass());
+		GameState->AddSectionForPlayer(Player->PlayerState->GetPlayerId(),Position, GetRandomSectionClass());
 	}
 }

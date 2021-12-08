@@ -7,6 +7,7 @@
 #include "RWF_Helpers.h"
 #include "RWF_PlayerStart.h"
 #include "ToolBuilderUtil.h"
+#include "GameFramework/PlayerState.h"
 #include "Kismet/GameplayStatics.h"
 
 
@@ -73,7 +74,7 @@ AActor* ARunningWithFriendsGameMode::ChoosePlayerStart_Implementation(AControlle
 			const FVector SectionPos = Start->GetActorLocation() - FVector(0,-250,100);
 			// Add player ot the track lists	
 			State->AddTrackInfo(Player);
-			State->AddSectionForPlayer(Player->GetUniqueID(), SectionPos, FirstSectionClass);
+			State->AddSectionForPlayer(Player->PlayerState->GetPlayerId(), SectionPos, FirstSectionClass);
 			return Start;
 		}
 	}

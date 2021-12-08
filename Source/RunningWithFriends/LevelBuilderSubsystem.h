@@ -26,7 +26,7 @@ public:
 	FVector TrackPosition = FVector::ZeroVector;
 
 	UPROPERTY()
-	uint32 OwningPlayerID = 0;
+	int32 OwningPlayerId = 0;
 
 	UPROPERTY()
 	TArray<TSubclassOf<ALevelSection>> CurrentSections;
