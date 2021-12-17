@@ -6,7 +6,6 @@
 #include "LevelBuilderSubSystem.h"
 #include "RWF_PlayerStart.h"
 #include "GameFramework/GameModeBase.h"
-#include "GameFramework/PlayerStart.h"
 #include "RunningWithFriendsGameMode.generated.h"
 
 
@@ -33,6 +32,14 @@ public:
 	ERWF_GamePhase GetGamePhase() const { return CurrentPhase; }
 
 	virtual void HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer) override;
+	
+	// TODO Change the backing DT to have a "safe to spawn" on flag
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Game Settings")
+	TSubclassOf<ALevelSection> FirstSectionClass;
+
+	virtual void TickActor(float DeltaTime, ELevelTick TickType, FActorTickFunction& ThisTickFunction) override;
+
+	void GetLocalPlayerState();
 
 protected:
 	virtual void PostLogin(APlayerController* NewPlayer) override;
@@ -40,8 +47,7 @@ protected:
 	UPROPERTY()
 	TArray<ARWF_PlayerStart*> PlayerStarts;
 
-	UPROPERTY()
-	TSubclassOf<ALevelSection> FirstSectionClass;
+	
 
 private:
 	ERWF_GamePhase CurrentPhase = ERWF_GamePhase::PreGamePhase;

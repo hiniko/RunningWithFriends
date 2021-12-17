@@ -5,13 +5,16 @@
 
 #include "BaseRunner.h"
 #include "LevelBuilderSubSystem.h"
-#include "GameFramework/PlayerState.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values
 ALevelSection::ALevelSection()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	
+	bReplicates = true;
+	SetReplicatingMovement(false);
 
 	LevelRoot = CreateDefaultSubobject<USceneComponent>(TEXT("LevelRoot"));
 	
@@ -54,29 +57,29 @@ void ALevelSection::OnTriggerOverlap(UPrimitiveComponent* OverlappedComp, AActor
 	}
 }
 
-void ALevelSection::PostNetReceiveLocationAndRotation()
-{
-	const FRepMovement& LocalRepMovement = GetReplicatedMovement();
-
-	FIntVector RebaseVector;
-	if(CurrentTrackOwner->bIsLocalPlayer)
-	{
-		RebaseVector.X = 150;
-		RebaseVector.Y = 0;
-		RebaseVector.Z = 50;
-	}else
-	{
-		RebaseVector.X = 0;
-		RebaseVector.Y = 0;
-		RebaseVector.Z = 0;
-	}
-	
-	FVector NewLocation = FRepMovement::RebaseOntoLocalOrigin(LocalRepMovement.Location, RebaseVector);
-	if( RootComponent && RootComponent->IsRegistered() && (NewLocation != GetActorLocation() || LocalRepMovement.Rotation != GetActorRotation()) )
-	{
-		SetActorLocationAndRotation(NewLocation, LocalRepMovement.Rotation, /*bSweep=*/ false);
-	}
-}
+// void ALevelSection::PostNetReceiveLocationAndRotation()
+// {
+// 	const FRepMovement& LocalRepMovement = GetReplicatedMovement();
+//
+// 	FIntVector RebaseVector;
+// 	if(CurrentTrackOwner->bIsLocalPlayer)
+// 	{
+// 		RebaseVector.X = 150;
+// 		RebaseVector.Y = 0;
+// 		RebaseVector.Z = 50;
+// 	}else
+// 	{
+// 		RebaseVector.X = 0;
+// 		RebaseVector.Y = 0;
+// 		RebaseVector.Z = 0;
+// 	}
+// 	
+// 	FVector NewLocation = FRepMovement::RebaseOntoLocalOrigin(LocalRepMovement.Location, RebaseVector);
+// 	if( RootComponent && RootComponent->IsRegistered() && (NewLocation != GetActorLocation() || LocalRepMovement.Rotation != GetActorRotation()) )
+// 	{
+// 		SetActorLocationAndRotation(NewLocation, LocalRepMovement.Rotation, /*bSweep=*/ false);
+// 	}
+// }
 
 
 // Called every frame

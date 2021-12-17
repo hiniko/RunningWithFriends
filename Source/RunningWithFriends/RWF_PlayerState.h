@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "LevelBuilderSubSystem.h"
 #include "GameFramework/PlayerState.h"
 #include "RWF_PlayerState.generated.h"
 
@@ -20,5 +21,10 @@ public:
 
 	UPROPERTY()
 	int32 RemoteTrackID = 0;
-	
+
+
+protected:
+
+	UPROPERTY()
+	FPlayerTrack Track;
 };

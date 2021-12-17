@@ -1,5 +1,7 @@
 ﻿#pragma once
 #include "LevelSection.h"
+#include "RWF_GameState.h"
+#include "RWF_PlayerStart.h"
 #include "LevelBuilderSubsystem.generated.h" 
 
 DECLARE_LOG_CATEGORY_EXTERN(LogLevelBuilder, Display, All)
@@ -35,6 +37,22 @@ public:
 	bool bIsLocalPlayer = false;
 };
 
+
+USTRUCT()
+struct FTrackSection
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	ALevelSection* Section;
+
+	UPROPERTY()
+	TSubclassOf<ALevelSection> SectionClass;
+
+	UPROPERTY()
+	bool IsActive = false;
+};
+
 UCLASS()
 class RUNNINGWITHFRIENDS_API ULevelBuilderSubsystem : public UGameInstanceSubsystem
 {
@@ -49,10 +67,14 @@ public:
 	TSubclassOf<ALevelSection> GetRandomSectionClass() const;
 	TSubclassOf<ALevelSection> GetSectionAtIndex(int32 idx) const;
 
+	void UpdateLevel(const TArray<FPlayerTrack>* PlayerTracks);
+
+	void RegisterPlayerStarts(TArray<ARWF_PlayerStart> PlayerStarts);
+
+private:
+	TMap<int32, FPlayerTrack> PlayerTracks;
+	TMap<int32, FTrackSection> SectionData;
+	
 	UPROPERTY()
 	TArray<FLevelSectionData> LevelSections;
-	
-	UPROPERTY()
-	TMap<APlayerController*, FPlayerTrack> PlayerTracks;
-	
 };

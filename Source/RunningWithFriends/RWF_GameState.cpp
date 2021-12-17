@@ -2,6 +2,7 @@
 
 
 #include "RWF_GameState.h"
+
 #include "RWF_Helpers.h"
 #include "RWF_PlayerState.h"
 #include "GameFramework/GameSession.h"
@@ -9,37 +10,26 @@
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 
-void ARWF_GameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+ARWF_GameState::ARWF_GameState()
 {
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	
-	DOREPLIFETIME(ARWF_GameState, PlayerTracks);
-}
-
-void ARWF_GameState::OnRep_PlayerTracks_Implementation()
-{
-	UE_LOG(LogRWF, Display, TEXT("Replicated PlayerTracks! %s, %s"), LOCAL_ROLE_STR, REMOTE_ROLE_STR);
-	if(APlayerController* PlayerController = GetWorld()->GetFirstPlayerController())
+	if(auto* LevelBuilder = GetGameInstance()->GetSubsystem<ULevelBuilderSubsystem>())
 	{
-		if(ARWF_PlayerState* PlayerState = PlayerController->GetPlayerState<ARWF_PlayerState>())
-		{
-			for(FPlayerTrack Track: PlayerTracks)
-			{
-				if(Track.OwningPlayerId == PlayerState->GetPlayerId())
-				{
-					Track.bIsLocalPlayer = true;
-					UE_LOG(LogRWF, Display, TEXT("Updating Track's local player flag for %d"), PlayerState->GetPlayerId());
-					break;
-				}
-			}
-		}
+		GetOnPlayerTracksUpdated().AddUObject(LevelBuilder, ULevelBuilderSubsystem::UpdateLevel);
 	}
 }
 
-// void ARWF_GameState::OnRep_PlayerTracks()
-// {
-//
-// }
+void ARWF_GameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	// Always notify clients of updates to the player tracks
+	DOREPLIFETIME_CONDITION_NOTIFY(ARWF_GameState, PlayerTracks, COND_None, REPNOTIFY_Always);
+}
+
+
+void ARWF_GameState::OnRep_PlayerTracks()
+{
+	UE_LOG(LogRWF, Display, TEXT("Player Tracks Reped, %d"), GetUniqueID());
+}
 
 void ARWF_GameState::AddTrackInfo(AController* NewPlayer)
 {
@@ -60,5 +50,10 @@ void ARWF_GameState::AddSectionForPlayer_Implementation(int32 PlayerID, FVector 
 	}
 	
 	Track->CurrentSections.Add(SectionClass);
-	GetWorld()->SpawnActor(SectionClass, &Position);
+	//GetWorld()->SpawnActor(SectionClass, &Position);
+
+	if(GetNetMode() == NM_ListenServer)
+	{
+		OnRep_PlayerTracks();
+	}
 }

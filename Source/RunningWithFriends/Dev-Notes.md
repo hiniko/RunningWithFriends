@@ -1,5 +1,77 @@
 ﻿# Dev Log
 
+## 14/12/21
+
+Ok I've had a couple of days of just being really confused and unsure what to do when it comes to controlling the replications of level sections in respect to their differing location on the client.
+
+I think the best thing to do is to just let the client handle the positions and get the server to send messages that trigger what needs to happen. As long as I can get the player input replicated on all the clients, it should all be good. I have a feeling I'm going to have more of an issue when it comes to the Player Characters since I'm not using their usual replication code. But I guess we will have to see.
+
+Handling things on the client and making checks and balances on the server is going to be a lot easier to handle that what I'm currently doing to be fair.
+
+So the current thinking is this:
+
+* GameState on the server is responsible for what the level should look like.
+  * It deals with calls for new level parts and replicates that to all clients
+
+* The clients will broadcast when an update to the level state is made leaving the Level builder to work out the differences in the new state to the old and handle creating the right pieces in the right place.
+
+
+Let's see how we get on with that....
+
+## 10/12/21
+I've neglected my notes for a few hours and I'm regretting it already. Can't remember what I was supposed to be doing.
+
+So I'm currently trying to do something I consider simple but of course in practice isn't.
+
+_I want the print on screen the current client's `PlayerId`_
+
+I thought the Player Controller would be a good place for this, as each client should only have one. This isn't working out the way I thought it would.
+
+* The code runs on the server
+  * This makes sense, as only the server has a `PlayerController` for all of the players. I just need to check that the current instance's NetMode is not `NM_Client`
+  * However, I'm using a listen server, where the client is both, and doesn't match the level of `NM_Client`
+  * The important take away here is that if working with `Listen Servers`, one must be careful about code that needs to be run on the host itself. Often you will need to check if you are a listen server and run the code you want clients to run, while clients will run it automatically, if the code is triggered from replication. This is an important point to remember
+* There are always more Player Controllers than you think there are:
+  * The output below shows this with a Listen Server with one client connected.
+```
+LogRWF: Display: Handling Starting New Player: RWF_GamePlayerController_0
+LogRWF: Display: PC: CLIENT ROLE_Authority with ROLE_SimulatedProxy
+LogRWF: Display: PC: SERVER  ROLE_Authority with ROLE_None
+LogRWF: Display: Handling Starting New Player: RWF_GamePlayerController_1
+LogRWF: Display: PC: CLIENT ROLE_AutonomousProxy with ROLE_Authority
+```
+* This is my current understanding. After we handle the player start:
+  * First the Listen Server "Client" Controller appears, Locally seen as Authority and remotely as a Simulated Proxy
+  * Then the Server Controller appears. I am basing this as it has no Remote Authority.
+  * When a client connects, We see them as an AutonomousProxy locally and a remote role of Authority.
+  * However we dont' see a server side version of this come alive?
+
+-- 
+
+OK I think I know what is going on!
+
+I got this output when running in PI in `Net Mode: Play as Client` rather than `Net Mode: Play as Listen Server` 
+
+```
+LogRWF: Display: PC: SERVER  ROLE_Authority with ROLE_None
+LogRWF: Display: Handling Starting New Player: RWF_GamePlayerController_0
+LogRWF: Display: PC: CLIENT ROLE_AutonomousProxy with ROLE_Authority
+LogRWF: Display: PC: SERVER  ROLE_Authority with ROLE_None
+LogRWF: Display: Handling Starting New Player: RWF_GamePlayerController_1
+LogRWF: Display: PC: CLIENT ROLE_AutonomousProxy with ROLE_Authority
+```
+
+* Server creates a controller for Client 1 Server side with Local Authority and no Remote
+* GameMode handles the start of this new Controller
+* Client Creates the Autonomous Proxy Controller locally, which the remote has Authority over it
+* The same happens for Client 2
+
+So the take away here is that:
+
+_In ListenServer mode, since the client is the server, It only creates one PlayerController but is a SimulatedProxy Remotely_, 
+
+Also as a bonus you can filter log messages in editor with binary operators! : `RWF && PC | Handling` Gave the above output.
+
 ## 8/12/21
 
 So I'm still missing something big here about replication. 

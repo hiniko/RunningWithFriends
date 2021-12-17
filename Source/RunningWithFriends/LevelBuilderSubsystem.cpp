@@ -55,6 +55,25 @@ TSubclassOf<ALevelSection> ULevelBuilderSubsystem::GetSectionAtIndex(int32 idx) 
 	}
 }
 
+void ULevelBuilderSubsystem::UpdateLevel(const TArray<FPlayerTrack>* InPlayerTracks)
+{
+	UE_LOG(LogLevelBuilder, Verbose, L"Updating PlayerTracks info");
+
+	for(const FPlayerTrack InTrack : InPlayerTracks)
+	{
+		if(PlayerTracks.Contains(InTrack.OwningPlayerId))
+		{
+			PlayerTracks[InTrack.OwningPlayerId].CurrentSections = InTrack.CurrentSections;
+		}else
+		{
+			UE_LOG(LogLevelBuilder, Display, L"Adding new player Data for id %d", InTrack.OwningPlayerId);
+			PlayerTracks.Add(InTrack.OwningPlayerId, InTrack);
+		}
+
+		// Check against what we have spawned 	
+	}
+	
+}
 
 TSubclassOf<ALevelSection> ULevelBuilderSubsystem::GetRandomSectionClass() const
 {

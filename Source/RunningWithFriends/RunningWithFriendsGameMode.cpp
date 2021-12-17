@@ -25,7 +25,6 @@ void ARunningWithFriendsGameMode::InitGameState()
 {
 	Super::InitGameState();
 	
-
 	// Find player starts and spawn in new Sections below them
 	TArray<AActor*> Starts;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ARWF_PlayerStart::StaticClass(), Starts);
@@ -37,15 +36,6 @@ void ARunningWithFriendsGameMode::InitGameState()
 		}
 	}
 	UE_LOG(LogRWF, Display, TEXT("Found %d Player Starts"), PlayerStarts.Num());
-
-	ULevelBuilderSubsystem* LevelBuilder = GetGameInstance()->GetSubsystem<ULevelBuilderSubsystem>();
-	if(LevelBuilder == nullptr)
-	{
-		UE_LOG(LogRWF, Error, L"Failed to find LevelBuilder Subsystem!")
-		return;
-	}
-	
-	FirstSectionClass = LevelBuilder->GetSectionAtIndex(3);
 }
 
 AActor* ARunningWithFriendsGameMode::ChoosePlayerStart_Implementation(AController* Player)
@@ -62,6 +52,12 @@ AActor* ARunningWithFriendsGameMode::ChoosePlayerStart_Implementation(AControlle
 		UE_LOG(LogRWF, Error, L"Failed to find LevelBuilder Subsystem!")
 		return nullptr;
 	}
+
+	if(FirstSectionClass == nullptr)
+	{
+		FirstSectionClass = LevelBuilder->GetRandomSectionClass();
+	}
+		
 
 	for(ARWF_PlayerStart* Start: PlayerStarts)
 	{
@@ -100,6 +96,23 @@ void ARunningWithFriendsGameMode::HandleStartingNewPlayer_Implementation(APlayer
 // 		}
 // 	}
 	
+}
+
+void ARunningWithFriendsGameMode::TickActor(float DeltaTime, ELevelTick Tick, FActorTickFunction& ThisTickFunction)
+{
+	Super::TickActor(DeltaTime, Tick, ThisTickFunction);
+
+	if(GetNetMode() < NM_Client && GetRemoteRole() == ROLE_Authority)
+	{
+		UE_LOG(LogRWF, Display, L"I (%d) am running on the server", GetUniqueID());
+	}else
+	{
+		UE_LOG(LogRWF, Display, L"I (%d )am running on the client", GetUniqueID());
+	}
+}
+
+void ARunningWithFriendsGameMode::GetLocalPlayerState()
+{
 }
 
 void ARunningWithFriendsGameMode::PostLogin(APlayerController* NewPlayer)

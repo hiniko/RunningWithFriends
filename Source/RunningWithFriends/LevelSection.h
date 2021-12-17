@@ -7,8 +7,6 @@
 #include "GameFramework/Actor.h"
 #include "LevelSection.generated.h"
 
-struct FPlayerTrack;
-
 UCLASS()
 class RUNNINGWITHFRIENDS_API ALevelSection : public AActor
 {
@@ -25,8 +23,6 @@ public:
 
 	UBoxComponent* GetNextSectionTrigger() const { return NextSectionTrigger; }
 	UBoxComponent* GetNextSectionLocation() const { return NextSectionLocation; }
-	FPlayerTrack* GetCurrentTrack() const { return CurrentTrackOwner; }
-	void SetCurrentTrack(FPlayerTrack* Track) { CurrentTrackOwner = Track; }
 
 protected:
 	
@@ -47,12 +43,6 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	USceneComponent* LevelRoot;
-
-	virtual void PostNetReceiveLocationAndRotation() override;
-
-private:
-
-	FPlayerTrack* CurrentTrackOwner;
-	bool bHasTriggeredNextSection = false;
 	
+	bool bHasTriggeredNextSection = false;
 };
